@@ -202,8 +202,15 @@ td.rdtYear:hover {
   background: #eee;
 }
 .rdtCounter .rdtCount {
-  height: 20%;
+  height: 25px;
+  border: 1px solid grey;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-size: 1.2em;
+}
+.rdtCounter .rdtCount:last-of-type {
+  margin-left: 3px;
 }
 
 .rdtMilli {

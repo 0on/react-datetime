@@ -59,7 +59,12 @@ var DateTimePickerTime = createClass({
 			}
 			return React.createElement('div', { key: type, className: 'rdtCounter' }, [
 				React.createElement('span', { key: 'up', className: 'rdtBtn', onMouseDown: this.onStartClicking( 'increase', type ), onContextMenu: this.disableContextMenu }, '▲' ),
-				React.createElement('div', { key: 'c', className: 'rdtCount' }, value ),
+				React.createElement('div', {
+					key: 'c',
+					className: 'rdtCount',
+					contentEditable: true,
+					onKeyDown: this.onKeyPressing('type', type)
+				}, value ),
 				React.createElement('span', { key: 'do', className: 'rdtBtn', onMouseDown: this.onStartClicking( 'decrease', type ), onContextMenu: this.disableContextMenu }, '▼' )
 			]);
 		}
@@ -185,6 +190,33 @@ var DateTimePickerTime = createClass({
 
 			document.body.addEventListener( 'mouseup', me.mouseUpListener );
 			document.body.addEventListener( 'touchend', me.mouseUpListener );
+		};
+	},
+
+	onKeyPressing: function ( action, type ) {
+		var me = this;
+		return function (evt) {
+			if (/\d/.test(evt.key)) {
+				var textContent = evt.target.textContent;
+				var selection = window.getSelection();
+				var result = textContent.substring(0, selection.getRangeAt(0).startOffset)
+					+ evt.key
+					+ textContent.substring(selection.getRangeAt(0).startOffset, textContent.length);
+				me.props.setTime( type, result.substr(0, 2) );
+			}
+			if (
+				evt.key !== 'ArrowRight'
+				&& evt.key !== 'ArrowLeft'
+				&& evt.key !== 'Backspace'
+				&& evt.key !== 'Delete'
+				&& evt.key !== 'Tab'
+				&& evt.key !== 'Escape'
+				&& evt.key !== 'Meta'
+				&& evt.key !== 'Alt'
+			) {
+				evt.preventDefault();
+			}
+			return false;
 		};
 	},
 
